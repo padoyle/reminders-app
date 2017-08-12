@@ -1,29 +1,22 @@
 package com.paulalexanderdoyle.reminderapp
 
+import android.app.Activity
 import android.database.Cursor
+import android.database.sqlite.SQLiteCursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.support.v4.widget.CursorAdapter
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.widget.ArrayAdapter
-import com.paulalexanderdoyle.reminderapp.data.Reminder
+import android.util.Log
+import android.view.*
+import android.widget.AdapterView
 import com.paulalexanderdoyle.reminderapp.database.ReminderDbHelper
 import com.paulalexanderdoyle.reminderapp.database.ReminderEntry
 import com.paulalexanderdoyle.reminderapp.database.RemindersCursorAdapter
 import kotlinx.android.synthetic.main.fragment_upcoming_reminders.*
 
-/**
- * A placeholder fragment containing a simple view.
- */
 class UpcomingRemindersFragment : Fragment() {
 
-//    val listAdapter: ArrayAdapter<String> by lazy {
-//        ArrayAdapter<String>(context, R.layout.reminder_list_item, R.id.reminder_name)
-//    }
     private val mDatabaseHelper: SQLiteOpenHelper by lazy {
         ReminderDbHelper(context)
     }
@@ -38,10 +31,29 @@ class UpcomingRemindersFragment : Fragment() {
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        registerForContextMenu(reminders_list)
         reminders_list.adapter = mCursorAdapter
     }
 
-    fun getCursor(): Cursor {
+    override fun onCreateContextMenu(menu: ContextMenu?, v: View?, menuInfo: ContextMenu.ContextMenuInfo?) {
+        val menuInflater: MenuInflater? = (context as? Activity)?.menuInflater
+        menuInflater?.inflate(R.menu.menu_long_press, menu)
+    }
+
+    override fun onContextItemSelected(item: MenuItem?): Boolean {
+        if (item?.itemId == R.id.action_delete) {
+            val itemPosition: Int? =
+                    (item.menuInfo as? AdapterView.AdapterContextMenuInfo)?.position
+            if (itemPosition != null) {
+                val cursor: SQLiteCursor? = reminders_list.getItemAtPosition(itemPosition) as? SQLiteCursor
+                deleteItem(cursor?.getInt(cursor.getColumnIndex(ReminderEntry._ID)))
+            }
+            return true
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    private fun getCursor(): Cursor {
         val db: SQLiteDatabase = mDatabaseHelper.readableDatabase
 
         val cursor: Cursor = db.query(ReminderEntry.TABLE_NAME, null, null, null, null, null,
@@ -49,48 +61,13 @@ class UpcomingRemindersFragment : Fragment() {
 
         return cursor
     }
-}
 
-//fun runRandomBS() {
-//    var Dave = Person("Dave Davidson",18,"Some college")
-//    var Steve = Person("Steve Stevenson",10,null, "steve@steve.com")
-//
-//    var test = Dave.canVote()
-//    var test2 = Steve.isTeenager()
-//
-//    val doubleString: (String)->String = {str -> str+str }
-//    val stringList: List<String> = List(3, {n -> n.toString()})
-//
-//    doActionToStrings(stringList, doubleString)
-//}
-//
-//fun doActionToStrings(stringList:List<String>, f:(String)->String) {
-//    for (str:String in stringList) {
-//        print(f(str))
-//    }
-//}
-//
-//open class Person(var name: String, var age: Int, var college: String?) {
-//
-//    var email: String = ""
-//
-//    constructor(name:String, age:Int, college:String?, email:String) : this(name, age, college) {
-//        this.email = email
-//    }
-//
-//    open fun canVote(): Boolean {
-//        return age >= 18
-//    }
-//
-//    fun isOctogenarian(): Boolean = age in 80..89
-//}
-//
-//fun Person.isTeenager(): Boolean {
-//    return age in 13..19
-//}
-//
-//class Employee(name: String, age: Int, college: String?, var company: String) : Person(name, age, college) {
-//    override fun canVote(): Boolean {
-//        return true
-//    }
-//}
+    private fun deleteItem(id: Int?) {
+        val db: SQLiteDatabase = mDatabaseHelper.writableDatabase
+        if (id != null) {
+            db.delete(ReminderEntry.TABLE_NAME, "${ReminderEntry._ID}=$id", null)
+        } else {
+            Log.w("PAULDEBUG", "Can't delete null id")
+        }
+    }
+}

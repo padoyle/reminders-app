@@ -1,7 +1,9 @@
 package com.paulalexanderdoyle.reminderapp.database
 
+import android.app.Activity
 import android.content.Context
 import android.database.Cursor
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -26,6 +28,16 @@ class RemindersCursorAdapter(context: Context, cursor: Cursor, flags: Int)
 
         textView?.text = cursor?.getString(cursor.getColumnIndex(ReminderEntry.COLUMN_NAME_TITLE))
                 ?: "<Unnamed>"
-        completed?.isChecked = cursor?.getLong(cursor.getColumnIndex(ReminderEntry.COLUMN_NAME_COMPLETION_DATE)) != null
+        completed?.isChecked = cursor?.getLong(cursor.getColumnIndex(
+                ReminderEntry.COLUMN_NAME_COMPLETION_DATE)) != null
+        view?.tag = cursor?.getString(cursor.getColumnIndex(ReminderEntry._ID))
+
+        view?.setOnLongClickListener(
+                fun (selectedView: View): Boolean {
+                    Log.i("PAULDEBUG", "here's a looooong muthafuckin click")
+                    (context as? Activity)?.openContextMenu(selectedView)
+                    return true
+                }
+        )
     }
 }

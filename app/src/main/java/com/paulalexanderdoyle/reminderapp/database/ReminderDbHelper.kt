@@ -3,10 +3,8 @@ package com.paulalexanderdoyle.reminderapp.database
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import android.util.Log
 
-/**
- * Created by Paul on 8/6/2017.
- */
 val DATABASE_VERSION: Int = 1
 val DATABASE_NAME: String = "Reminders.db"
 
@@ -24,6 +22,7 @@ class ReminderDbHelper(context: Context?) : SQLiteOpenHelper(context, DATABASE_N
             "DROP TABLE IF EXISTS ${ReminderEntry.TABLE_NAME}"
 
     override fun onCreate(database: SQLiteDatabase?) {
+        Log.i("PAULDEBUG", "Creating that there table")
         database?.execSQL(SQL_CREATE_REMINDERS) ?: print("Database object was null")
     }
 
