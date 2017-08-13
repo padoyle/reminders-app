@@ -12,13 +12,6 @@ class UpcomingReminders : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_upcoming_reminders)
         setSupportActionBar(toolbar)
-
-        fab.setOnClickListener { view ->
-            val addReminderDialog: AddReminderDialog = AddReminderDialog()
-            addReminderDialog.show(supportFragmentManager, "AddReminderDialog")
-//            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                    .setAction("Action", null).show()
-        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
