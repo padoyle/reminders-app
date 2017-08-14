@@ -6,7 +6,10 @@
     <string name="date_today">Today</string>
     <string name="date_tomorrow">Tomorrow</string>
 
+    <string name="menu_action_edit">Edit</string>
     <string name="menu_action_delete">Delete</string>
+    <string name="edit_save">Save</string>
+    <string name="edit_cancel">Cancel</string>
 
     <string name="placeholder">PLACEHOLDER</string>
 </resources>

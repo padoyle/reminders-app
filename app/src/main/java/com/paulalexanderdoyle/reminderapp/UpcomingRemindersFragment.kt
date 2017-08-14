@@ -14,6 +14,7 @@ import android.support.v4.content.Loader
 import android.util.Log
 import android.view.*
 import android.widget.AdapterView
+import com.paulalexanderdoyle.reminderapp.data.Reminder
 import com.paulalexanderdoyle.reminderapp.database.ReminderDbHelper
 import com.paulalexanderdoyle.reminderapp.database.ReminderEntry
 import com.paulalexanderdoyle.reminderapp.database.RemindersCursorAdapter
@@ -38,7 +39,7 @@ class UpcomingRemindersFragment : Fragment(), LoaderManager.LoaderCallbacks<Curs
     private val mCursorAdapter: RemindersCursorAdapter by lazy {
         RemindersCursorAdapter(context, null, flags = 0)
     }
-    lateinit private var loader: ReminderCursorLoader
+    private var loader: ReminderCursorLoader? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -53,9 +54,9 @@ class UpcomingRemindersFragment : Fragment(), LoaderManager.LoaderCallbacks<Curs
         reminders_list.adapter = mCursorAdapter
         fab.setOnClickListener { _ ->
             val editReminderDialog: EditReminderDialog = EditReminderDialog()
-            editReminderDialog.init { _ ->
-                loader.onContentChanged()
-            }
+            editReminderDialog.init({
+                updateAdapter()
+            }, null)
             editReminderDialog.show(fragmentManager, "EditReminderDialog")
         }
     }
@@ -66,21 +67,26 @@ class UpcomingRemindersFragment : Fragment(), LoaderManager.LoaderCallbacks<Curs
     }
 
     override fun onContextItemSelected(item: MenuItem?): Boolean {
+        val itemPosition: Int? = (item?.menuInfo as? AdapterView.AdapterContextMenuInfo)?.position
+        val cursor: SQLiteCursor? = reminders_list.getItemAtPosition(itemPosition ?: -1) as? SQLiteCursor
         if (item?.itemId == R.id.action_delete) {
-            val itemPosition: Int? =
-                    (item.menuInfo as? AdapterView.AdapterContextMenuInfo)?.position
             if (itemPosition != null) {
-                val cursor: SQLiteCursor? = reminders_list.getItemAtPosition(itemPosition) as? SQLiteCursor
                 deleteItem(cursor?.getInt(cursor.getColumnIndex(ReminderEntry._ID)))
             }
             return true
+        } else if (item?.itemId == R.id.action_edit) {
+            val editReminderDialog = EditReminderDialog()
+            editReminderDialog.init({
+                updateAdapter()
+            }, Reminder(cursor))
+            editReminderDialog.show(fragmentManager, "EditReminderDialog")
         }
         return super.onOptionsItemSelected(item)
     }
 
     override fun onCreateLoader(id: Int, args: Bundle?): Loader<Cursor> {
         loader = ReminderCursorLoader(mDatabaseHelper, context)
-        return loader
+        return loader as Loader<Cursor>
     }
 
     override fun onLoadFinished(loader: Loader<Cursor>?, data: Cursor?) {
@@ -91,6 +97,10 @@ class UpcomingRemindersFragment : Fragment(), LoaderManager.LoaderCallbacks<Curs
         mCursorAdapter.swapCursor(null)
     }
 
+    fun updateAdapter() {
+        loader?.onContentChanged()
+    }
+
     private fun deleteItem(id: Int?) {
         // TODO: Threadsafe way to do this in background
         val db: SQLiteDatabase = mDatabaseHelper.writableDatabase
@@ -99,6 +109,6 @@ class UpcomingRemindersFragment : Fragment(), LoaderManager.LoaderCallbacks<Curs
         } else {
             Log.w(javaClass.simpleName, "Can't delete null id")
         }
-        loader.onContentChanged()
+        updateAdapter()
     }
 }

@@ -11,7 +11,7 @@ import android.widget.CursorAdapter
 import android.widget.TextView
 import com.paulalexanderdoyle.reminderapp.R
 import com.paulalexanderdoyle.reminderapp.data.Reminder
-import com.paulalexanderdoyle.reminderapp.dateHeaderFormat
+import com.paulalexanderdoyle.reminderapp.defaultDateFormat
 import com.paulalexanderdoyle.reminderapp.isSameDay
 
 class RemindersCursorAdapter(context: Context, cursor: Cursor?, flags: Int)
@@ -44,7 +44,7 @@ class RemindersCursorAdapter(context: Context, cursor: Cursor?, flags: Int)
 
         if (showDate) {
             dateHeader?.findViewById<TextView>(R.id.date_header)?.text =
-                    dateHeaderFormat.format(reminder.dueDate)
+                    defaultDateFormat.format(reminder.dueDate)
             dateHeader?.visibility = View.VISIBLE
         } else {
             dateHeader?.visibility = View.GONE

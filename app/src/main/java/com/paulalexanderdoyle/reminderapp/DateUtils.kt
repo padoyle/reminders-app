@@ -4,7 +4,7 @@ import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
 
-val dateHeaderFormat: DateFormat = SimpleDateFormat("E, MMM d, yyyy", Locale.getDefault())
+val defaultDateFormat: DateFormat = SimpleDateFormat("E, MMM d, yyyy", Locale.getDefault())
 
 fun isSameDay(date1: Date?, date2: Date?): Boolean {
     val cal1: Calendar = Calendar.getInstance()
