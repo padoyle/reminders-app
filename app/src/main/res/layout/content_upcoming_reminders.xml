@@ -2,8 +2,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/fragment"
-    android:name="com.paulalexanderdoyle.reminderapp.UpcomingRemindersFragment"
+    android:name="com.paulalexanderdoyle.reminderapp.ActiveRemindersFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:layout="@layout/fragment_upcoming_reminders" />
+    tools:layout="@layout/fragment_active_reminders" />

@@ -14,43 +14,24 @@ import com.paulalexanderdoyle.reminderapp.data.Reminder
 import com.paulalexanderdoyle.reminderapp.defaultDateFormat
 import com.paulalexanderdoyle.reminderapp.isSameDay
 
-class RemindersCursorAdapter(context: Context, cursor: Cursor?, flags: Int)
+class CompletedRemindersCursorAdapter(context: Context, cursor: Cursor?, flags: Int)
     : CursorAdapter(context, cursor, flags) {
 
     override fun newView(context: Context?, cursor: Cursor?, parent: ViewGroup?): View {
         val inflater: LayoutInflater? = LayoutInflater.from(context)
 
-        return inflater?.inflate(R.layout.reminder_list_item, parent, false)
+        return inflater?.inflate(R.layout.completed_reminder_item, parent, false)
                 ?: throw RuntimeException("Problem with inflation")
     }
 
     override fun bindView(view: View?, context: Context?, cursor: Cursor?) {
-        val dateHeader: View? = view?.findViewById(R.id.header_layout)
         val textView: TextView? = view?.findViewById<TextView>(R.id.reminder_name)
-        val completed: CheckBox? = view?.findViewById<CheckBox>(R.id.checkbox)
+        val completedDate: TextView? = view?.findViewById<TextView>(R.id.completion_date)
 
         val reminder: Reminder = Reminder(cursor)
-        var showDate: Boolean = false
-        if (cursor != null) {
-            if (cursor.isFirst) {
-                showDate = true
-            } else {
-                val prev: Reminder = Reminder(getItem(cursor.position - 1) as Cursor)
-                if (!isSameDay(prev.dueDate, reminder.dueDate)) {
-                    showDate = true
-                }
-            }
-        }
-
-        if (showDate) {
-            dateHeader?.findViewById<TextView>(R.id.date_header)?.text =
-                    defaultDateFormat.format(reminder.dueDate)
-            dateHeader?.visibility = View.VISIBLE
-        } else {
-            dateHeader?.visibility = View.GONE
-        }
         textView?.text = reminder.title
-        completed?.isChecked = reminder.completedDate != null
+        completedDate?.text = context?.resources?.getString(R.string.completed_on_label,
+                defaultDateFormat.format(reminder.completedDate))
         view?.tag = reminder
 
         view?.setOnLongClickListener(

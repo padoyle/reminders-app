@@ -2,14 +2,23 @@
     <string name="app_name">ReminderApp</string>
     <string name="action_settings">Settings</string>
 
+    <!-- add/edit -->
     <string name="title_hint">Remember to&#8230;</string>
     <string name="date_today">Today</string>
     <string name="date_tomorrow">Tomorrow</string>
-
-    <string name="menu_action_edit">Edit</string>
-    <string name="menu_action_delete">Delete</string>
     <string name="edit_save">Save</string>
     <string name="edit_cancel">Cancel</string>
+
+    <!-- tabs -->
+    <string name="tab_name_active">Active</string>
+    <string name="tab_name_completed">Completed</string>
+
+    <!-- menus -->
+    <string name="menu_action_edit">Edit</string>
+    <string name="menu_action_mark_incomplete">Mark incomplete</string>
+    <string name="menu_action_delete">Delete</string>
+
+    <string name="completed_on_label">Completed: %1$s</string>
 
     <string name="placeholder">PLACEHOLDER</string>
 </resources>
