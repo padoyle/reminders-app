@@ -13,7 +13,7 @@ import android.widget.DatePicker
 import android.widget.TextView
 import com.paulalexanderdoyle.reminderapp.data.Reminder
 import com.paulalexanderdoyle.reminderapp.database.ReminderDbHelper
-import com.paulalexanderdoyle.reminderapp.database.ReminderEntry
+import com.paulalexanderdoyle.reminderapp.data.ReminderEntry
 import kotlinx.android.synthetic.main.dialog_edit_reminder.*
 import java.util.*
 

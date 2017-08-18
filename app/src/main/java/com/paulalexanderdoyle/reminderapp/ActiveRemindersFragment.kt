@@ -17,8 +17,8 @@ import android.view.*
 import android.widget.AdapterView
 import com.paulalexanderdoyle.reminderapp.data.Reminder
 import com.paulalexanderdoyle.reminderapp.database.ReminderDbHelper
-import com.paulalexanderdoyle.reminderapp.database.ReminderEntry
-import com.paulalexanderdoyle.reminderapp.database.ActiveRemindersCursorAdapter
+import com.paulalexanderdoyle.reminderapp.data.ReminderEntry
+import com.paulalexanderdoyle.reminderapp.adapters.ActiveRemindersCursorAdapter
 import kotlinx.android.synthetic.main.fragment_active_reminders.*
 import java.util.*
 

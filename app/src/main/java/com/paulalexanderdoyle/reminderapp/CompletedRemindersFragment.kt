@@ -16,9 +16,9 @@ import android.util.Log
 import android.view.*
 import android.widget.AdapterView
 import com.paulalexanderdoyle.reminderapp.data.Reminder
-import com.paulalexanderdoyle.reminderapp.database.CompletedRemindersCursorAdapter
+import com.paulalexanderdoyle.reminderapp.adapters.CompletedRemindersCursorAdapter
 import com.paulalexanderdoyle.reminderapp.database.ReminderDbHelper
-import com.paulalexanderdoyle.reminderapp.database.ReminderEntry
+import com.paulalexanderdoyle.reminderapp.data.ReminderEntry
 import kotlinx.android.synthetic.main.fragment_completed_reminders.*
 
 class CompletedRemindersFragment : Fragment(), LoaderManager.LoaderCallbacks<Cursor> {

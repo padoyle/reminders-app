@@ -1,4 +1,4 @@
-package com.paulalexanderdoyle.reminderapp.database
+package com.paulalexanderdoyle.reminderapp.adapters
 
 import android.app.Activity
 import android.content.Context

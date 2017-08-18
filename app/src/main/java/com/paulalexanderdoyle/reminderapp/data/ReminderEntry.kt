@@ -1,8 +1,7 @@
-package com.paulalexanderdoyle.reminderapp.database
+package com.paulalexanderdoyle.reminderapp.data
 
 import android.content.ContentValues
 import android.provider.BaseColumns
-import com.paulalexanderdoyle.reminderapp.data.Reminder
 
 object ReminderEntry : BaseColumns {
     val TABLE_NAME: String = "reminder"

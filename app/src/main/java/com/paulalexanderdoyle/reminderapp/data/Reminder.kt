@@ -1,7 +1,6 @@
 package com.paulalexanderdoyle.reminderapp.data
 
 import android.database.Cursor
-import com.paulalexanderdoyle.reminderapp.database.ReminderEntry
 import com.paulalexanderdoyle.reminderapp.database.getDateCol
 import com.paulalexanderdoyle.reminderapp.database.getStringCol
 import java.util.*
