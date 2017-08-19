@@ -13,21 +13,23 @@ import android.widget.DatePicker
 import android.widget.TextView
 import com.paulalexanderdoyle.reminderapp.data.Reminder
 import com.paulalexanderdoyle.reminderapp.database.ReminderDbHelper
-import com.paulalexanderdoyle.reminderapp.data.ReminderEntry
+import com.paulalexanderdoyle.reminderapp.data.ReminderTable
 import kotlinx.android.synthetic.main.dialog_edit_reminder.*
+import kotlinx.coroutines.experimental.android.UI
+import kotlinx.coroutines.experimental.async
+import org.jetbrains.anko.coroutines.experimental.asReference
+import org.jetbrains.anko.coroutines.experimental.bg
 import java.util.*
 
 class EditReminderDialog : DialogFragment() {
 
-    private val mDatabaseHelper: SQLiteOpenHelper by lazy {
-        ReminderDbHelper(context)
+    private val databaseHelper: ReminderDbHelper by lazy {
+        ReminderDbHelper.getInstance(context)
     }
     private val dateSelectedListener: DatePickerDialog.OnDateSetListener =
-            object: DatePickerDialog.OnDateSetListener {
+            object : DatePickerDialog.OnDateSetListener {
                 override fun onDateSet(view: DatePicker?, year: Int, month: Int, day: Int) {
-                    selectedDate.set(Calendar.YEAR, year)
-                    selectedDate.set(Calendar.MONTH, month)
-                    selectedDate.set(Calendar.DAY_OF_MONTH, day)
+                    selectedDate.set(year, month, day)
                     updateDateLabel()
                 }
             }
@@ -66,17 +68,20 @@ class EditReminderDialog : DialogFragment() {
             dismiss()
         }
         confirmButton.setOnClickListener {
-            val db: SQLiteDatabase = mDatabaseHelper.writableDatabase
-            val values: ContentValues = ReminderEntry.getContentValues(
-                    titleText.text.toString(), selectedDate.time.time, Date().time, null)
+            val reminder = Reminder(-1, titleText.text.toString(), selectedDate.time, Date())
 
+            val ref = this.asReference()
             if (existing != null) {
-                db.update(ReminderEntry.TABLE_NAME, values,
-                        ReminderEntry._ID + "=" + existing?.id, null)
-                modifiedDbCallback(existing?.id ?: 0)
+                reminder.id = existing?.id ?: 0
+                async(UI) {
+                    val result = bg { databaseHelper.updateInfo(reminder) }
+                    ref().modifiedDbCallback(result.await())
+                }
             } else {
-                val res: Long = db.insert(ReminderEntry.TABLE_NAME, null, values)
-                modifiedDbCallback(res)
+                async(UI) {
+                    val result = bg { databaseHelper.insertItem(reminder) }
+                    ref().modifiedDbCallback(result.await())
+                }
             }
 
             dismiss()

@@ -1,7 +1,6 @@
 package com.paulalexanderdoyle.reminderapp
 
 import android.app.Activity
-import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteCursor
@@ -12,14 +11,17 @@ import android.support.v4.app.Fragment
 import android.support.v4.app.LoaderManager
 import android.support.v4.content.CursorLoader
 import android.support.v4.content.Loader
-import android.util.Log
 import android.view.*
 import android.widget.AdapterView
-import com.paulalexanderdoyle.reminderapp.data.Reminder
-import com.paulalexanderdoyle.reminderapp.database.ReminderDbHelper
-import com.paulalexanderdoyle.reminderapp.data.ReminderEntry
 import com.paulalexanderdoyle.reminderapp.adapters.ActiveRemindersCursorAdapter
+import com.paulalexanderdoyle.reminderapp.data.Reminder
+import com.paulalexanderdoyle.reminderapp.data.ReminderTable
+import com.paulalexanderdoyle.reminderapp.database.ReminderDbHelper
 import kotlinx.android.synthetic.main.fragment_active_reminders.*
+import kotlinx.coroutines.experimental.android.UI
+import kotlinx.coroutines.experimental.async
+import org.jetbrains.anko.coroutines.experimental.asReference
+import org.jetbrains.anko.coroutines.experimental.bg
 import java.util.*
 
 class ActiveRemindersFragment : Fragment(), LoaderManager.LoaderCallbacks<Cursor> {
@@ -28,19 +30,23 @@ class ActiveRemindersFragment : Fragment(), LoaderManager.LoaderCallbacks<Cursor
         override fun loadInBackground(): Cursor {
             val db: SQLiteDatabase = dbHelper.readableDatabase
 
-            val cursor: Cursor = db.query(ReminderEntry.TABLE_NAME, null,
-                    ReminderEntry.COLUMN_NAME_COMPLETION_DATE + " IS NULL", null, null, null,
-                    "${ReminderEntry.COLUMN_NAME_DUE_DATE} ASC")
+            val cursor: Cursor = db.query(ReminderTable.TABLE_NAME, null,
+                    ReminderTable.COL_COMPLETION_DATE + " IS NULL", null, null, null,
+                    "${ReminderTable.COL_DUE_DATE} ASC")
             return cursor
         }
     }
 
-    private val databaseHelper: SQLiteOpenHelper by lazy {
-        ReminderDbHelper(context)
+    private val databaseHelper: ReminderDbHelper by lazy {
+        ReminderDbHelper.getInstance(context)
     }
     private val cursorAdapter: ActiveRemindersCursorAdapter by lazy {
         ActiveRemindersCursorAdapter(context, null, 0, { reminder ->
-            markComplete(reminder)
+            val ref = this.asReference()
+            async(UI) {
+                databaseHelper.setCompletion(reminder.id, Date())
+                ref().updateAdapter()
+            }
         })
     }
     private var loader: ReminderCursorLoader? = null
@@ -73,16 +79,19 @@ class ActiveRemindersFragment : Fragment(), LoaderManager.LoaderCallbacks<Cursor
     override fun onContextItemSelected(item: MenuItem?): Boolean {
         val itemPosition: Int? = (item?.menuInfo as? AdapterView.AdapterContextMenuInfo)?.position
         val cursor: SQLiteCursor? = reminders_list.getItemAtPosition(itemPosition ?: -1) as? SQLiteCursor
+        val reminderId: Long? = cursor?.getLong(cursor.getColumnIndex(ReminderTable._ID))
         if (item?.itemId == R.id.action_delete) {
-            if (itemPosition != null) {
-                deleteItem(cursor?.getInt(cursor.getColumnIndex(ReminderEntry._ID)))
+            val ref = this.asReference()
+            if (reminderId != null) {
+                async(UI) {
+                    bg { databaseHelper.deleteItem(reminderId) }.await()
+                    ref().updateAdapter()
+                }
             }
             return true
         } else if (item?.itemId == R.id.action_edit) {
             val editReminderDialog = EditReminderDialog()
-            editReminderDialog.init({
-                updateAdapter()
-            }, Reminder(cursor))
+            editReminderDialog.init({ updateAdapter() }, Reminder(cursor))
             editReminderDialog.show(fragmentManager, "EditReminderDialog")
         }
         return super.onOptionsItemSelected(item)
@@ -112,24 +121,4 @@ class ActiveRemindersFragment : Fragment(), LoaderManager.LoaderCallbacks<Cursor
         loader?.onContentChanged()
     }
 
-    private fun deleteItem(id: Int?) {
-        // TODO: Threadsafe way to do this in background
-        val db: SQLiteDatabase = databaseHelper.writableDatabase
-        if (id != null) {
-            db.delete(ReminderEntry.TABLE_NAME, "${ReminderEntry._ID}=$id", null)
-        } else {
-            Log.w(javaClass.simpleName, "Can't delete null id")
-        }
-        updateAdapter()
-    }
-
-    // TODO: UGGGHHH FUUCK THIS DUPLICATION, IT'S SO BAD
-    private fun markComplete(reminder: Reminder) {
-        val db: SQLiteDatabase = databaseHelper.writableDatabase
-        reminder.completedDate = Date()
-        val values: ContentValues = ReminderEntry.getContentValues(reminder)
-        db.update(ReminderEntry.TABLE_NAME, values,
-                ReminderEntry._ID + "=" + reminder.id, null)
-        updateAdapter()
-    }
 }

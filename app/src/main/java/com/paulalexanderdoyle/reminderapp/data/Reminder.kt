@@ -5,14 +5,13 @@ import com.paulalexanderdoyle.reminderapp.database.getDateCol
 import com.paulalexanderdoyle.reminderapp.database.getStringCol
 import java.util.*
 
-class Reminder(var id: Long, var title: String, var dueDate: Date?) {
-    var creationDate: Date? = null
+class Reminder(var id: Long, var title: String, var dueDate: Date?, var creationDate: Date?) {
     var completedDate: Date? = null
 
-    constructor(cursor: Cursor?) : this(cursor?.getLong(cursor.getColumnIndex(ReminderEntry._ID)) ?: 0,
-            getStringCol(cursor, ReminderEntry.COLUMN_NAME_TITLE),
-            getDateCol(cursor, ReminderEntry.COLUMN_NAME_DUE_DATE)) {
-        creationDate = getDateCol(cursor, ReminderEntry.COLUMN_NAME_CREATION_DATE)
-        completedDate = getDateCol(cursor, ReminderEntry.COLUMN_NAME_COMPLETION_DATE)
+    constructor(cursor: Cursor?) : this(cursor?.getLong(cursor.getColumnIndex(ReminderTable._ID)) ?: 0,
+            getStringCol(cursor, ReminderTable.COL_TITLE),
+            getDateCol(cursor, ReminderTable.COL_DUE_DATE),
+            getDateCol(cursor, ReminderTable.COL_CREATION_DATE)) {
+        completedDate = getDateCol(cursor, ReminderTable.COL_COMPLETION_DATE)
     }
 }
