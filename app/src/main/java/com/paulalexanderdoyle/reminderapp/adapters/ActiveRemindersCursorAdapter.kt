@@ -8,15 +8,22 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.CursorAdapter
+import android.widget.ImageView
 import android.widget.TextView
 import com.paulalexanderdoyle.reminderapp.R
 import com.paulalexanderdoyle.reminderapp.data.Reminder
 import com.paulalexanderdoyle.reminderapp.defaultDateFormat
+import com.paulalexanderdoyle.reminderapp.isOverdue
 import com.paulalexanderdoyle.reminderapp.isSameDay
 
 class ActiveRemindersCursorAdapter(context: Context, cursor: Cursor?, flags: Int,
                                    val onChecked: ((Reminder) -> Unit)?)
     : CursorAdapter(context, cursor, flags) {
+    companion object {
+        private const val NO_HEADER: Int = 0
+        private const val OVERDUE_HEADER: Int = 1
+        private const val DATE_HEADER: Int = 2
+    }
 
     override fun newView(context: Context?, cursor: Cursor?, parent: ViewGroup?): View {
         val inflater: LayoutInflater? = LayoutInflater.from(context)
@@ -26,30 +33,12 @@ class ActiveRemindersCursorAdapter(context: Context, cursor: Cursor?, flags: Int
     }
 
     override fun bindView(view: View?, context: Context?, cursor: Cursor?) {
-        val dateHeader: View? = view?.findViewById(R.id.header_layout)
         val textView: TextView? = view?.findViewById<TextView>(R.id.reminder_name)
         val completed: CheckBox? = view?.findViewById<CheckBox>(R.id.checkbox)
 
         val reminder: Reminder = Reminder(cursor)
-        var showDate: Boolean = false
-        if (cursor != null) {
-            if (cursor.isFirst) {
-                showDate = true
-            } else {
-                val prev: Reminder = Reminder(getItem(cursor.position - 1) as Cursor)
-                if (!isSameDay(prev.dueDate, reminder.dueDate)) {
-                    showDate = true
-                }
-            }
-        }
+        setupHeader(view, context, reminder)
 
-        if (showDate) {
-            dateHeader?.findViewById<TextView>(R.id.date_header)?.text =
-                    defaultDateFormat.format(reminder.dueDate)
-            dateHeader?.visibility = View.VISIBLE
-        } else {
-            dateHeader?.visibility = View.GONE
-        }
         textView?.text = reminder.title
         completed?.isChecked = reminder.completedDate != null
         completed?.setOnClickListener {
@@ -63,5 +52,38 @@ class ActiveRemindersCursorAdapter(context: Context, cursor: Cursor?, flags: Int
                     return true
                 }
         )
+    }
+
+    private fun setupHeader(view: View?, context: Context?, reminder: Reminder) {
+        val headerView: View? = view?.findViewById(R.id.header_layout)
+        var headerType: Int = NO_HEADER
+        if (cursor != null) {
+            if (cursor.isFirst) {
+                headerType = if (isOverdue(reminder.dueDate)) OVERDUE_HEADER else DATE_HEADER
+            } else {
+                val prev: Reminder = Reminder(getItem(cursor.position - 1) as Cursor)
+                if (!isSameDay(prev.dueDate, reminder.dueDate) && !isOverdue(reminder.dueDate)) {
+                    headerType = DATE_HEADER
+                }
+            }
+        }
+
+        val dateHeader = headerView?.findViewById<TextView>(R.id.date_header)
+        val alertIcon = headerView?.findViewById<ImageView>(R.id.alert_view)
+        when (headerType) {
+            NO_HEADER -> headerView?.visibility = View.GONE
+            OVERDUE_HEADER -> {
+                headerView?.visibility = View.VISIBLE
+                alertIcon?.visibility = View.VISIBLE
+                dateHeader?.text = context?.resources?.getString(R.string.overdue_header)
+            }
+            DATE_HEADER -> {
+                headerView?.visibility = View.VISIBLE
+                alertIcon?.visibility = View.GONE
+                headerView?.findViewById<TextView>(R.id.date_header)?.text =
+                        defaultDateFormat.format(reminder.dueDate)
+            }
+        }
+
     }
 }

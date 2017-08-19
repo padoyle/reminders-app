@@ -73,9 +73,9 @@ class ReminderDbHelper private constructor(context: Context) :
         use {
             id = insert(ReminderTable.TABLE_NAME,
                     ReminderTable.COL_TITLE to rem.title,
-                    ReminderTable.COL_DUE_DATE to rem.dueDate,
-                    ReminderTable.COL_COMPLETION_DATE to rem.completedDate,
-                    ReminderTable.COL_CREATION_DATE to rem.creationDate)
+                    ReminderTable.COL_DUE_DATE to rem.dueDate?.time,
+                    ReminderTable.COL_COMPLETION_DATE to rem.completedDate?.time,
+                    ReminderTable.COL_CREATION_DATE to rem.creationDate?.time)
         }
         return id
     }
