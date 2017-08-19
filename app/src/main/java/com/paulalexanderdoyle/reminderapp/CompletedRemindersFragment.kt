@@ -30,7 +30,7 @@ class CompletedRemindersFragment : Fragment(), LoaderManager.LoaderCallbacks<Cur
 
             val cursor: Cursor = db.query(ReminderTable.TABLE_NAME, null,
                     ReminderTable.COL_COMPLETION_DATE + " IS NOT NULL", null, null, null,
-                    "${ReminderTable.COL_DUE_DATE} ASC")
+                    "${ReminderTable.COL_COMPLETION_DATE} DESC")
             return cursor
         }
     }

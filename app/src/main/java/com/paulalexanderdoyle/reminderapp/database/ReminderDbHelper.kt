@@ -2,6 +2,7 @@ package com.paulalexanderdoyle.reminderapp.database
 
 import android.content.Context
 import android.database.Cursor
+import android.database.SQLException
 import android.database.sqlite.SQLiteDatabase
 import android.util.Log
 import com.paulalexanderdoyle.reminderapp.data.Reminder
@@ -94,13 +95,13 @@ class ReminderDbHelper private constructor(context: Context) :
 
     // Returns id of item updated if update occurs
     fun updateInfo(rem: Reminder): Long {
-        var modified = 0
+        var modified: Int = -1
         use {
             modified = update(ReminderTable.TABLE_NAME,
                     ReminderTable.COL_TITLE to rem.title,
-                    ReminderTable.COL_DUE_DATE to rem.dueDate,
-                    ReminderTable.COL_COMPLETION_DATE to rem.completedDate,
-                    ReminderTable.COL_CREATION_DATE to rem.creationDate)
+                    ReminderTable.COL_DUE_DATE to rem.dueDate?.time,
+                    ReminderTable.COL_COMPLETION_DATE to rem.completedDate?.time,
+                    ReminderTable.COL_CREATION_DATE to rem.creationDate?.time)
                     .whereArgs("${ReminderTable._ID}={remId}", "remId" to rem.id).exec()
         }
         return if (modified > 0) rem.id else -1

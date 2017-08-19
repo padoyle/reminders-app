@@ -79,6 +79,9 @@ class ActiveRemindersFragment : Fragment(), LoaderManager.LoaderCallbacks<Cursor
     override fun onContextItemSelected(item: MenuItem?): Boolean {
         val itemPosition: Int? = (item?.menuInfo as? AdapterView.AdapterContextMenuInfo)?.position
         val cursor: SQLiteCursor? = reminders_list.getItemAtPosition(itemPosition ?: -1) as? SQLiteCursor
+        if (cursor == null || cursor.count == 0 || cursor.isAfterLast || cursor.isBeforeFirst) {
+            return false
+        }
         val reminderId: Long? = cursor?.getLong(cursor.getColumnIndex(ReminderTable._ID))
         if (item?.itemId == R.id.action_delete) {
             val ref = this.asReference()

@@ -1,9 +1,6 @@
 package com.paulalexanderdoyle.reminderapp
 
 import android.app.DatePickerDialog
-import android.content.ContentValues
-import android.database.sqlite.SQLiteDatabase
-import android.database.sqlite.SQLiteOpenHelper
 import android.os.Bundle
 import android.support.v4.app.DialogFragment
 import android.view.LayoutInflater
@@ -13,7 +10,6 @@ import android.widget.DatePicker
 import android.widget.TextView
 import com.paulalexanderdoyle.reminderapp.data.Reminder
 import com.paulalexanderdoyle.reminderapp.database.ReminderDbHelper
-import com.paulalexanderdoyle.reminderapp.data.ReminderTable
 import kotlinx.android.synthetic.main.dialog_edit_reminder.*
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
@@ -68,11 +64,10 @@ class EditReminderDialog : DialogFragment() {
             dismiss()
         }
         confirmButton.setOnClickListener {
-            val reminder = Reminder(-1, titleText.text.toString(), selectedDate.time, Date())
+            val reminder = Reminder(existing?.id ?: -1, titleText.text.toString(), selectedDate.time, Date())
 
             val ref = this.asReference()
-            if (existing != null) {
-                reminder.id = existing?.id ?: 0
+            if (existing != null && (existing?.id ?: -1) >= 1) {
                 async(UI) {
                     val result = bg { databaseHelper.updateInfo(reminder) }
                     ref().modifiedDbCallback(result.await())
