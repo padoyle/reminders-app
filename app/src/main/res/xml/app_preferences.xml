@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <SwitchPreferenceCompat
+        android:defaultValue="false"
+        android:key="pref_notify"
+        android:summary="@string/toggle_notifications_description"
+        android:title="@string/toggle_notifications_title" />
+
+    <EditTextPreference
+        android:dependency="pref_notify"
+        android:key="pref_notify_time"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:summary="@string/notification_time_description"
+        android:title="@string/notification_time_title" />
+</android.support.v7.preference.PreferenceScreen>

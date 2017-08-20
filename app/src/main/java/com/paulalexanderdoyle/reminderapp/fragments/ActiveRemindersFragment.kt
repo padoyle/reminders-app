@@ -1,4 +1,4 @@
-package com.paulalexanderdoyle.reminderapp
+package com.paulalexanderdoyle.reminderapp.fragments
 
 import android.app.Activity
 import android.content.Context
@@ -13,24 +13,28 @@ import android.support.v4.content.CursorLoader
 import android.support.v4.content.Loader
 import android.view.*
 import android.widget.AdapterView
-import com.paulalexanderdoyle.reminderapp.adapters.CompletedRemindersCursorAdapter
+import com.paulalexanderdoyle.reminderapp.EditReminderDialog
+import com.paulalexanderdoyle.reminderapp.R
+import com.paulalexanderdoyle.reminderapp.adapters.ActiveRemindersCursorAdapter
+import com.paulalexanderdoyle.reminderapp.data.Reminder
 import com.paulalexanderdoyle.reminderapp.data.ReminderTable
 import com.paulalexanderdoyle.reminderapp.database.ReminderDbHelper
-import kotlinx.android.synthetic.main.fragment_completed_reminders.*
+import kotlinx.android.synthetic.main.fragment_active_reminders.*
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
 import org.jetbrains.anko.coroutines.experimental.asReference
 import org.jetbrains.anko.coroutines.experimental.bg
+import java.util.*
 
-class CompletedRemindersFragment : Fragment(), LoaderManager.LoaderCallbacks<Cursor> {
+class ActiveRemindersFragment : Fragment(), LoaderManager.LoaderCallbacks<Cursor> {
 
-    class ReminderCursorLoader(val dbHelper: SQLiteOpenHelper, ctx: Context) : CursorLoader(ctx) {
+    class ReminderCursorLoader(val dbHelper: SQLiteOpenHelper, context: Context) : CursorLoader(context) {
         override fun loadInBackground(): Cursor {
             val db: SQLiteDatabase = dbHelper.readableDatabase
 
             val cursor: Cursor = db.query(ReminderTable.TABLE_NAME, null,
-                    ReminderTable.COL_COMPLETION_DATE + " IS NOT NULL", null, null, null,
-                    "${ReminderTable.COL_COMPLETION_DATE} DESC")
+                    ReminderTable.COL_COMPLETION_DATE + " IS NULL", null, null, null,
+                    "${ReminderTable.COL_DUE_DATE} ASC")
             return cursor
         }
     }
@@ -38,14 +42,20 @@ class CompletedRemindersFragment : Fragment(), LoaderManager.LoaderCallbacks<Cur
     private val databaseHelper: ReminderDbHelper by lazy {
         ReminderDbHelper.getInstance(context)
     }
-    private val cursorAdapter: CompletedRemindersCursorAdapter by lazy {
-        CompletedRemindersCursorAdapter(context, null, flags = 0)
+    private val cursorAdapter: ActiveRemindersCursorAdapter by lazy {
+        ActiveRemindersCursorAdapter(context, null, 0, { reminder ->
+            val ref = this.asReference()
+            async(UI) {
+                databaseHelper.setCompletion(reminder.id, Date())
+                ref().updateAdapter()
+            }
+        })
     }
     private var loader: ReminderCursorLoader? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_completed_reminders, container, false)
+        return inflater.inflate(R.layout.fragment_active_reminders, container, false)
     }
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
@@ -54,11 +64,18 @@ class CompletedRemindersFragment : Fragment(), LoaderManager.LoaderCallbacks<Cur
 
         loaderManager.initLoader(0x01, null, this)
         reminders_list.adapter = cursorAdapter
+        fab.setOnClickListener { _ ->
+            val editReminderDialog: EditReminderDialog = EditReminderDialog()
+            editReminderDialog.init({
+                updateAdapter()
+            }, null)
+            editReminderDialog.show(fragmentManager, "EditReminderDialog")
+        }
     }
 
     override fun onCreateContextMenu(menu: ContextMenu?, v: View?, menuInfo: ContextMenu.ContextMenuInfo?) {
         val menuInflater: MenuInflater? = (context as? Activity)?.menuInflater
-        menuInflater?.inflate(R.menu.context_menu_completed, menu)
+        menuInflater?.inflate(R.menu.context_menu_active, menu)
     }
 
     override fun onContextItemSelected(item: MenuItem?): Boolean {
@@ -67,21 +84,20 @@ class CompletedRemindersFragment : Fragment(), LoaderManager.LoaderCallbacks<Cur
         if (cursor == null || cursor.count == 0 || cursor.isAfterLast || cursor.isBeforeFirst) {
             return false
         }
-        val reminderId: Long? = cursor.getLong(cursor.getColumnIndex(ReminderTable._ID))
-        if (itemPosition != null && reminderId != null) {
+        val reminderId: Long? = cursor?.getLong(cursor.getColumnIndex(ReminderTable._ID))
+        if (item?.itemId == R.id.action_delete) {
             val ref = this.asReference()
-            if (item?.itemId == R.id.action_delete) {
+            if (reminderId != null) {
                 async(UI) {
                     bg { databaseHelper.deleteItem(reminderId) }.await()
                     ref().updateAdapter()
                 }
-            } else if (item?.itemId == R.id.action_mark_incomplete) {
-                async(UI) {
-                    bg { databaseHelper.setCompletion(reminderId, null) }.await()
-                    ref().updateAdapter()
-                }
             }
             return true
+        } else if (item?.itemId == R.id.action_edit) {
+            val editReminderDialog = EditReminderDialog()
+            editReminderDialog.init({ updateAdapter() }, Reminder(cursor))
+            editReminderDialog.show(fragmentManager, "EditReminderDialog")
         }
         return super.onOptionsItemSelected(item)
     }
@@ -109,4 +125,5 @@ class CompletedRemindersFragment : Fragment(), LoaderManager.LoaderCallbacks<Cur
     fun updateAdapter() {
         loader?.onContentChanged()
     }
+
 }

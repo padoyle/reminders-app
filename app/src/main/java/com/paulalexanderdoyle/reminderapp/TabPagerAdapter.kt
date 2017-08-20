@@ -3,6 +3,8 @@ package com.paulalexanderdoyle.reminderapp
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentStatePagerAdapter
+import com.paulalexanderdoyle.reminderapp.fragments.ActiveRemindersFragment
+import com.paulalexanderdoyle.reminderapp.fragments.CompletedRemindersFragment
 
 class TabPagerAdapter(fm: FragmentManager): FragmentStatePagerAdapter(fm) {
 

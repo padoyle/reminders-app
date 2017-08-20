@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.paulalexanderdoyle.reminderapp.ActiveRemindersFragment"
+    tools:context="com.paulalexanderdoyle.reminderapp.fragments.ActiveRemindersFragment"
     tools:showIn="@layout/reminders_activity">
 
     <ListView

@@ -49,8 +49,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:layout_toLeftOf="@id/checkbox"
-            android:text="@string/placeholder" />
+            android:layout_toLeftOf="@id/checkbox" />
 
         <CheckBox
             android:id="@+id/checkbox"

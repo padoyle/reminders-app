@@ -1,5 +1,6 @@
 package com.paulalexanderdoyle.reminderapp
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.TabLayout
 import android.support.v4.view.PagerAdapter
@@ -18,13 +19,16 @@ class RemindersActivity : AppCompatActivity() {
         val pagerAdapter: PagerAdapter = TabPagerAdapter(supportFragmentManager)
         tab_view_pager?.adapter = pagerAdapter
         tab_view_pager.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tab_selector))
-        tab_selector?.addOnTabSelectedListener(object: TabLayout.OnTabSelectedListener {
+        tab_selector?.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 tab_view_pager.currentItem = tab?.position ?: 0
             }
 
-            override fun onTabUnselected(tab: TabLayout.Tab?) { /*Do nothing*/ }
-            override fun onTabReselected(tab: TabLayout.Tab?) { /*Do nothing*/ }
+            override fun onTabUnselected(tab: TabLayout.Tab?) { /*Do nothing*/
+            }
+
+            override fun onTabReselected(tab: TabLayout.Tab?) { /*Do nothing*/
+            }
         })
     }
 
@@ -38,9 +42,11 @@ class RemindersActivity : AppCompatActivity() {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        return when (item.itemId) {
-            R.id.action_settings -> true
-            else -> super.onOptionsItemSelected(item)
+        when (item.itemId) {
+            R.id.action_settings -> {
+                startActivity(Intent(this@RemindersActivity, SettingsActivity::class.java))
+            }
         }
+        return super.onOptionsItemSelected(item)
     }
 }
