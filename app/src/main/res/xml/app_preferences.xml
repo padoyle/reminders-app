@@ -3,13 +3,13 @@
 
     <SwitchPreferenceCompat
         android:defaultValue="false"
-        android:key="pref_notify"
+        android:key="@string/notification_pref_key"
         android:summary="@string/toggle_notifications_description"
         android:title="@string/toggle_notifications_title" />
 
-    <com.paulalexanderdoyle.reminderapp.TimePreference
-        android:dependency="pref_notify"
-        android:key="pref_notify_time"
+    <com.paulalexanderdoyle.reminderapp.notification.TimePreference
+        android:dependency="@string/notification_pref_key"
+        android:key="@string/notify_time_pref_key"
         android:defaultValue="12:00"
         android:dialogTitle="@string/notification_time_title"
         android:summary="@string/notification_time_description_default"

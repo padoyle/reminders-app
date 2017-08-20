@@ -27,4 +27,8 @@
     <string name="notification_time_title">Notification Time</string>
     <string name="notification_time_description_default">When you will be notified each day of unfinished items.</string>
     <string name="notification_time_description">Send notification at %1$s</string>
+
+    <!--NON-TRANSLATABLE-->
+    <string name="notification_pref_key" translatable="false">notification_pref_key</string>
+    <string name="notify_time_pref_key" translatable="false">notify_time_pref_key</string>
 </resources>

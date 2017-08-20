@@ -6,7 +6,7 @@ import android.support.v7.preference.Preference
 import android.support.v7.preference.PreferenceDialogFragmentCompat
 import android.view.View
 import android.widget.TimePicker
-import com.paulalexanderdoyle.reminderapp.TimePreference
+import com.paulalexanderdoyle.reminderapp.notification.TimePreference
 
 class TimePreferenceDialogFragmentCompat : PreferenceDialogFragmentCompat(),
         DialogPreference.TargetFragment {

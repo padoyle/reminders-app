@@ -1,9 +1,10 @@
-package com.paulalexanderdoyle.reminderapp
+package com.paulalexanderdoyle.reminderapp.notification
 
 import android.content.Context
 import android.content.res.TypedArray
 import android.support.v7.preference.DialogPreference
 import android.util.AttributeSet
+import com.paulalexanderdoyle.reminderapp.R
 
 class TimePreference : DialogPreference {
     var hour: Int = 0
@@ -57,6 +58,11 @@ class TimePreference : DialogPreference {
 
         hour = parseHour(timeString)
         minute = parseMinute(timeString)
+
+        if (restorePersistedValue) {
+            summary = context.resources.getString(R.string.notification_time_description,
+                    formatTimeForDisplay(hour, minute))
+        }
     }
 
     fun persistStringValue(value: String) {
