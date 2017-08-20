@@ -25,5 +25,6 @@
     <string name="toggle_notifications_title">Daily Notifications</string>
     <string name="toggle_notifications_description">Toggle daily notifications. If there are unfinished notifications due soon, you will receive a notification at your chosen time of day.</string>
     <string name="notification_time_title">Notification Time</string>
-    <string name="notification_time_description">When you will be notified each day of unfinished items.</string>
+    <string name="notification_time_description_default">When you will be notified each day of unfinished items.</string>
+    <string name="notification_time_description">Send notification at %1$s</string>
 </resources>

@@ -1,4 +1,4 @@
-package com.paulalexanderdoyle.reminderapp
+package com.paulalexanderdoyle.reminderapp.dialogs
 
 import android.app.DatePickerDialog
 import android.os.Bundle
@@ -8,8 +8,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.DatePicker
 import android.widget.TextView
+import com.paulalexanderdoyle.reminderapp.R
 import com.paulalexanderdoyle.reminderapp.data.Reminder
 import com.paulalexanderdoyle.reminderapp.database.ReminderDbHelper
+import com.paulalexanderdoyle.reminderapp.defaultDateFormat
 import kotlinx.android.synthetic.main.dialog_edit_reminder.*
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async

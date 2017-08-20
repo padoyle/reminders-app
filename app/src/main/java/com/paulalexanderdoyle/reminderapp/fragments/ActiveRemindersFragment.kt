@@ -13,7 +13,7 @@ import android.support.v4.content.CursorLoader
 import android.support.v4.content.Loader
 import android.view.*
 import android.widget.AdapterView
-import com.paulalexanderdoyle.reminderapp.EditReminderDialog
+import com.paulalexanderdoyle.reminderapp.dialogs.EditReminderDialog
 import com.paulalexanderdoyle.reminderapp.R
 import com.paulalexanderdoyle.reminderapp.adapters.ActiveRemindersCursorAdapter
 import com.paulalexanderdoyle.reminderapp.data.Reminder
