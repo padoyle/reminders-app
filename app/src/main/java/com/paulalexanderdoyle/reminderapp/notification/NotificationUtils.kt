@@ -11,10 +11,11 @@ import android.media.RingtoneManager
 import android.os.Build
 import android.support.v4.app.NotificationCompat
 
-class NotificationUtils(base: Context): ContextWrapper(base) {
+class NotificationUtils(base: Context) : ContextWrapper(base) {
     init {
         createChannels()
     }
+
     companion object {
         const val CHANNEL_ID: String = "com.paulalexanderdoyle.reminderapp.MAIN"
         const val CHANNEL_NAME: String = "MAIN CHANNEL"
@@ -42,11 +43,11 @@ class NotificationUtils(base: Context): ContextWrapper(base) {
         nm.createNotificationChannel(channel)
     }
 
-    fun getNotification(sender: PendingIntent): Notification {
+    fun getNotification(sender: PendingIntent, title: String, text: String): Notification {
         val alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
         val notificationBuilder = NotificationCompat.Builder(applicationContext, CHANNEL_ID)
-                .setContentTitle("We just testin dis shit")
-                .setContentText("Mo goodness")
+                .setContentTitle(title)
+                .setContentText(text)
                 .setSmallIcon(android.R.drawable.stat_notify_more)
                 .setContentIntent(sender)
                 .setSound(alarmSound)

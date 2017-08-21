@@ -105,4 +105,20 @@ class ReminderDbHelper private constructor(context: Context) :
         }
         return if (modified > 0) rem.id else -1
     }
+
+    fun getUpcoming(date: Long): List<Reminder> {
+        val reminders: MutableList<Reminder> = mutableListOf()
+        use {
+            select(ReminderTable.TABLE_NAME)
+                    .whereArgs("${ReminderTable.COL_COMPLETION_DATE} IS NULL" +
+                    " AND ${ReminderTable.COL_DUE_DATE} < {date}", "date" to date).exec {
+                moveToFirst()
+                while (!isLast && !isAfterLast) {
+                    reminders.add(Reminder(this))
+                    moveToNext()
+                }
+            }
+        }
+        return reminders
+    }
 }

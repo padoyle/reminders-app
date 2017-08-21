@@ -13,10 +13,10 @@ import java.util.*
 
 class SettingsFragment : PreferenceFragment(), SharedPreferences.OnSharedPreferenceChangeListener {
 
-    val notificationPrefKey: String by lazy {
+    private val notificationPrefKey: String by lazy {
         context?.resources?.getString(R.string.notification_pref_key) ?: ""
     }
-    val notifyTimePrefKey: String by lazy {
+    private val notifyTimePrefKey: String by lazy {
         context?.resources?.getString(R.string.notify_time_pref_key) ?: ""
     }
 
@@ -60,6 +60,7 @@ class SettingsFragment : PreferenceFragment(), SharedPreferences.OnSharedPrefere
         val notifyTimePref: String = sharedPreferences.getString(notifyTimePrefKey, "00:00")
         notifyTime.set(Calendar.HOUR_OF_DAY, TimePreference.parseHour(notifyTimePref))
         notifyTime.set(Calendar.MINUTE, TimePreference.parseMinute(notifyTimePref))
+        notifyTime.set(Calendar.SECOND, 0)
         // Adjust in case time has already passed today
         if (notifyTime.time < Date()) {
             notifyTime.add(Calendar.DAY_OF_MONTH, 1)

@@ -35,6 +35,9 @@
     <string name="x_days">%1$d days</string>
     <string name="day">1 day</string>
 
+    <string name="notification_title_overdue">You have overdue tasks!</string>
+    <string name="notification_title_upcoming">You have %1$d upcoming tasks due soon.</string>
+
     <!--NON-TRANSLATABLE-->
     <string name="notification_pref_key" translatable="false">notification_pref_key</string>
     <string name="notify_time_pref_key" translatable="false">notify_time_pref_key</string>
