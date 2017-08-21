@@ -8,10 +8,25 @@
         android:title="@string/toggle_notifications_title" />
 
     <com.paulalexanderdoyle.reminderapp.notification.TimePreference
-        android:dependency="@string/notification_pref_key"
-        android:key="@string/notify_time_pref_key"
         android:defaultValue="12:00"
-        android:dialogTitle="@string/notification_time_title"
-        android:summary="@string/notification_time_description_default"
-        android:title="@string/notification_time_title" />
+        android:dependency="@string/notification_pref_key"
+        android:dialogTitle="@string/notify_time_title"
+        android:key="@string/notify_time_pref_key"
+        android:summary="@string/notify_time_description_default"
+        android:title="@string/notify_time_title" />
+
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:dependency="@string/notification_pref_key"
+        android:key="@string/notify_overdue_pref_key"
+        android:summary="@string/notify_overdue_description"
+        android:title="@string/notify_overdue_title" />
+
+    <com.paulalexanderdoyle.reminderapp.notification.DaysInAdvancePreference
+        android:defaultValue="1"
+        android:dependency="@string/notification_pref_key"
+        android:inputType="number"
+        android:key="@string/notify_upcoming_pref_key"
+        android:title="@string/notify_upcoming_title" />
+
 </android.support.v7.preference.PreferenceScreen>

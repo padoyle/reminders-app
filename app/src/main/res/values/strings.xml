@@ -24,11 +24,20 @@
     <!-- settings -->
     <string name="toggle_notifications_title">Daily Notifications</string>
     <string name="toggle_notifications_description">Toggle daily notifications. If there are unfinished notifications due soon, you will receive a notification at your chosen time of day.</string>
-    <string name="notification_time_title">Notification Time</string>
-    <string name="notification_time_description_default">When you will be notified each day of unfinished items.</string>
-    <string name="notification_time_description">Send notification at %1$s</string>
+    <string name="notify_time_title">Notification Time</string>
+    <string name="notify_time_description_default">When you will be notified each day of unfinished items.</string>
+    <string name="notify_time_description">Send notification at %1$s</string>
+    <string name="notify_overdue_title">Notify Overdue</string>
+    <string name="notify_overdue_description">Always send notifications for overdue items.</string>
+    <string name="notify_upcoming_title">Advance Notify</string>
+    <string name="notify_upcoming_description">Notify me when I have items due in the next %1$s.</string>
+
+    <string name="x_days">%1$d days</string>
+    <string name="day">1 day</string>
 
     <!--NON-TRANSLATABLE-->
     <string name="notification_pref_key" translatable="false">notification_pref_key</string>
     <string name="notify_time_pref_key" translatable="false">notify_time_pref_key</string>
+    <string name="notify_upcoming_pref_key" translatable="false">notify_upcoming_pref_key</string>
+    <string name="notify_overdue_pref_key" translatable="false">notify_overdue_pref_key</string>
 </resources>

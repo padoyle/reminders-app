@@ -12,6 +12,7 @@ class TimePreference : DialogPreference {
 
     @Suppress("unused")
     constructor(context: Context) : super(context)
+
     @Suppress("unused")
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
 
@@ -60,14 +61,14 @@ class TimePreference : DialogPreference {
         minute = parseMinute(timeString)
 
         if (restorePersistedValue) {
-            summary = context.resources.getString(R.string.notification_time_description,
+            summary = context.resources.getString(R.string.notify_time_description,
                     formatTimeForDisplay(hour, minute))
         }
     }
 
     fun persistStringValue(value: String) {
         persistString(value)
-        summary = context.resources.getString(R.string.notification_time_description,
+        summary = context.resources.getString(R.string.notify_time_description,
                 formatTimeForDisplay(hour, minute))
     }
 }
