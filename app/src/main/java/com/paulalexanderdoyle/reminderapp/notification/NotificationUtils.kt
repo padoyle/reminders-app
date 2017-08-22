@@ -10,6 +10,7 @@ import android.graphics.Color
 import android.media.RingtoneManager
 import android.os.Build
 import android.support.v4.app.NotificationCompat
+import com.paulalexanderdoyle.reminderapp.R
 
 class NotificationUtils(base: Context) : ContextWrapper(base) {
     init {
@@ -48,7 +49,7 @@ class NotificationUtils(base: Context) : ContextWrapper(base) {
         val notificationBuilder = NotificationCompat.Builder(applicationContext, CHANNEL_ID)
                 .setContentTitle(title)
                 .setContentText(text)
-                .setSmallIcon(android.R.drawable.stat_notify_more)
+                .setSmallIcon(R.drawable.ic_reminders_notification)
                 .setContentIntent(sender)
                 .setSound(alarmSound)
                 .setAutoCancel(true)

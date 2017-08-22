@@ -25,6 +25,7 @@
             android:layout_marginTop="6dp"
             android:layout_toRightOf="@id/alert_view"
             android:layout_centerVertical="true"
+            android:textColor="@color/darkest_gray"
             android:textSize="18sp"
             android:gravity="center_vertical"/>
 
